@@ -1,0 +1,6 @@
+*.tfvars
+.DS_Store
+*.tfstate
+*.lock.hcl
+*.terraform
+config.yaml

@@ -1,0 +1,79 @@
+webserverSecretKey: bf4d4e933b3bde8208810cbbf9188269
+
+createUserJob:
+  useHelmHooks: false
+  applyCustomEnv: false
+migrateDatabaseJob:
+  useHelmHooks: false
+  applyCustomEnv: false
+
+webserver:
+  waitForMigrations:
+    enabled: true
+  service:
+    type: LoadBalancer
+  defaultUser:
+    enabled: true
+    username: ${airflow_username}
+    password: ${airflow_password}
+    role: ${airflow_role}
+    email: ${airflow_email}
+    firstName: ${airflow_firstname}
+    lastName: ${airflow_lastname}
+  
+data:
+  metadataConnection:
+    user:  ${db_user}
+    pass:   ${db_password}
+    protocol: postgresql
+    host: ${db_host}
+    port: 5432
+    db: ${db_name}
+
+redis:
+  persistence: 
+    enabled: true
+
+workers:
+  persistence:
+    enabled: true
+    size: 10Gi
+    storageClassName: ${svc_name}
+  waitForMigrations:
+    enabled: true
+  extraVolumes:
+    - name: worker-volume
+  extraVolumeMounts:
+    - name: worker-volume
+      mountPath: /var/workers
+
+triggerer:
+  persistence:
+    enabled: true
+    size: 10Gi
+    storageClassName: ${svc_name}
+  waitForMigrations:
+    enabled: true 
+  extraVolumes:
+    - name: triggerer-volume
+  extraVolumeMounts:
+    - name: triggerer-volume
+      mountPath: /var/triggerer  
+
+scheduler:
+  waitForMigrations:
+    enabled: true
+
+pgbouncer:
+  enabled: true
+
+postgresql:
+  enabled: false
+
+dags:
+  gitSync:
+    enabled: true
+    repo: https://github.com/Techtacles/airflow-helm-kubernetes-infra.git
+    branch: master
+    rev: HEAD
+    subPath: "dags"
